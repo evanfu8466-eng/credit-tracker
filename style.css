@@ -1,0 +1,316 @@
+/* ============================================================
+ * 實踐大學資管系 學分追蹤器 — 深藍色系、手機優先
+ * ============================================================ */
+
+:root {
+  /* 深藍色階（同一色相由深到淺） */
+  --bg:        #0a1424;   /* 頁面底 */
+  --surface:   #10203a;   /* 卡片 */
+  --surface-2: #16294a;   /* 卡片內層 / hover */
+  --border:    #23395e;
+
+  /* 文字（永遠用文字色，不用資料色） */
+  --ink:       #eaf1fb;
+  --ink-2:     #a9bcd8;
+  --ink-3:     #7288a8;
+
+  /* 資料色：meter 填色 = 主色，軌道 = 同色系較深一階 */
+  --accent:    #4ea1ff;   /* 學程一 / 總進度 */
+  --accent-2:  #9d8cff;   /* 學程二（固定指派，不隨數量重排） */
+  --track:     #1b3153;
+
+  /* 狀態色（保留給狀態，不當第 N 個系列色用） */
+  --good:      #3fca8e;
+  --warn:      #f2b34c;
+
+  --radius: 14px;
+  --radius-s: 9px;
+}
+
+* { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: "Microsoft JhengHei UI", "Microsoft JhengHei", "PingFang TC",
+               "Noto Sans TC", "Heiti TC", sans-serif;
+  font-size: 16px;
+  line-height: 1.55;
+}
+
+main {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 0 14px 40px;
+}
+
+/* ---------------- header ---------------- */
+.site-header {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 26px 16px 10px;
+}
+.site-header h1 {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: .5px;
+}
+.subtitle { margin: 6px 0 0; color: var(--ink-2); font-size: 13.5px; }
+
+/* ---------------- 卡片 ---------------- */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin: 14px 0;
+}
+.card-title {
+  margin: 0 0 10px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink-2);
+  letter-spacing: .5px;
+}
+
+/* ---------------- 畢業進度（hero） ---------------- */
+.hero-figure { display: flex; align-items: baseline; gap: 8px; margin: 2px 0 12px; }
+.hero-value  { font-size: 52px; font-weight: 600; line-height: 1; }
+.hero-unit   { color: var(--ink-2); font-size: 16px; }
+
+.meter {
+  height: 12px;
+  background: var(--track);
+  border-radius: 6px;
+  overflow: hidden;
+}
+.meter-fill {
+  height: 100%;
+  width: 0%;
+  background: var(--accent);
+  border-radius: 6px;
+  transition: width .35s ease;
+}
+.meter-fill.is-done { background: var(--good); }
+
+.stat-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-top: 14px;
+}
+.stat-tile {
+  background: var(--surface-2);
+  border-radius: var(--radius-s);
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.stat-label { font-size: 12px; color: var(--ink-2); }
+.stat-value { font-size: 24px; font-weight: 600; }
+
+.cap-note { margin: 10px 0 0; font-size: 12.5px; color: var(--warn); }
+
+/* ---------------- 學程卡 ---------------- */
+.program-card .prog-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+.prog-name { font-size: 15px; font-weight: 700; margin: 0; display: flex; align-items: center; gap: 8px; }
+.prog-dot  { width: 10px; height: 10px; border-radius: 50%; flex: none; }
+.prog-nums { font-size: 13.5px; color: var(--ink-2); white-space: nowrap; }
+.prog-nums strong { color: var(--ink); font-weight: 600; }
+
+.program-card .meter { height: 10px; }
+
+.prog-status { margin: 10px 0 0; font-size: 13px; }
+.prog-status.ok { color: var(--good); }
+
+.missing-title { margin: 10px 0 6px; font-size: 12.5px; color: var(--ink-3); }
+.missing-list { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; list-style: none; }
+.missing-list li {
+  font-size: 12.5px;
+  color: var(--ink-2);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 3px 10px;
+}
+
+/* ---------------- 畢業門檻 ---------------- */
+.threshold-row { display: flex; flex-wrap: wrap; gap: 8px; }
+.threshold-btn {
+  font: inherit;
+  font-size: 13.5px;
+  border-radius: 999px;
+  padding: 7px 14px;
+  cursor: pointer;
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  color: var(--ink-2);
+  min-height: 40px;
+}
+.threshold-btn.is-pass {
+  border-color: var(--good);
+  color: var(--good);
+  background: rgba(63, 202, 142, .12);
+}
+
+/* ---------------- 工具列 ---------------- */
+.toolbar { display: flex; flex-direction: column; gap: 10px; }
+.filter-group, .io-group { display: flex; flex-wrap: wrap; gap: 8px; }
+
+.filter-btn, .io-btn {
+  font: inherit;
+  font-size: 14px;
+  border-radius: var(--radius-s);
+  padding: 9px 14px;
+  min-height: 42px;
+  cursor: pointer;
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  color: var(--ink-2);
+}
+.filter-btn.is-active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #06111f;
+  font-weight: 600;
+}
+.io-btn { flex: 1 1 auto; }
+.io-danger { color: #ff9d9d; border-color: #5c2f3a; }
+
+.hint { margin: 2px 0 0; font-size: 12px; color: var(--ink-3); }
+
+/* ---------------- 課程清單 ---------------- */
+.year-section { margin: 22px 0 0; }
+.year-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 10px;
+  padding: 0 2px 6px;
+}
+.year-head h2 { margin: 0; font-size: 18px; font-weight: 700; }
+.year-credits { font-size: 13px; color: var(--ink-2); white-space: nowrap; }
+
+.cat-group { margin: 10px 0; }
+.cat-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 10px;
+  margin: 0 2px 6px;
+}
+.cat-head h3 { margin: 0; font-size: 13.5px; font-weight: 600; color: var(--ink-2); }
+.cat-credits { font-size: 12px; color: var(--ink-3); white-space: nowrap; }
+
+.course-rows {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.course-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 14px;
+  min-height: 52px;
+  cursor: pointer;
+  border-bottom: 1px solid var(--border);
+  -webkit-tap-highlight-color: transparent;
+}
+.course-row:last-child { border-bottom: none; }
+.course-row:active { background: var(--surface-2); }
+
+.course-row input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  flex: none;
+  width: 24px;
+  height: 24px;
+  margin: 2px 0 0;
+  border: 2px solid var(--ink-3);
+  border-radius: 7px;
+  background: transparent;
+  cursor: pointer;
+  display: grid;
+  place-content: center;
+}
+.course-row input[type="checkbox"]:checked {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+.course-row input[type="checkbox"]:checked::after {
+  content: "";
+  width: 12px;
+  height: 7px;
+  border-left: 2.5px solid #06111f;
+  border-bottom: 2.5px solid #06111f;
+  transform: translateY(-1.5px) rotate(-45deg);
+}
+.course-row input[type="checkbox"]:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.course-main { flex: 1 1 auto; min-width: 0; }
+.course-name { font-size: 15px; }
+.course-row.is-done .course-name { color: var(--ink-3); text-decoration: line-through; text-decoration-thickness: 1px; }
+.course-meta { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; align-items: center; }
+.course-note { display: block; margin-top: 3px; font-size: 12px; color: var(--warn); }
+
+.badge {
+  font-size: 11px;
+  line-height: 1;
+  padding: 3px 7px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  color: var(--ink-3);
+  white-space: nowrap;
+}
+.badge.req-必修 { color: var(--accent); border-color: rgba(78, 161, 255, .45); }
+.badge.prog-cloud { color: var(--accent); border-color: rgba(78, 161, 255, .45); }
+.badge.prog-ai { color: var(--accent-2); border-color: rgba(157, 140, 255, .5); }
+
+.course-credits {
+  flex: none;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink-2);
+  padding-top: 2px;
+  white-space: nowrap;
+}
+
+/* 篩選 */
+body[data-filter="todo"] .course-row.is-done { display: none; }
+body[data-filter="done"] .course-row:not(.is-done) { display: none; }
+.cat-group.is-empty, .year-section.is-empty { display: none; }
+
+/* ---------------- footer ---------------- */
+.site-footer {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 6px 16px 46px;
+  color: var(--ink-3);
+  font-size: 12px;
+}
+.site-footer p { margin: 4px 0; }
+.site-footer code { background: var(--surface-2); padding: 1px 5px; border-radius: 4px; }
+
+/* ---------------- 較大螢幕 ---------------- */
+@media (min-width: 560px) {
+  .site-header h1 { font-size: 26px; }
+  .toolbar { flex-direction: row; justify-content: space-between; align-items: center; }
+  .toolbar .hint { display: none; }
+}
