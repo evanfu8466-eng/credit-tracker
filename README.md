@@ -29,6 +29,16 @@
 
 ## 部署
 
-推送到 `main` 分支後，`.github/workflows/deploy-pages.yml` 會自動部署到 GitHub Pages。
+`.github/workflows/deploy-pages.yml` 會在每次推送後，自動把網站發佈到 `gh-pages` 分支
+（目前 `main` 與開發分支的推送都會觸發）。
+
+**第一次需要手動啟用 GitHub Pages（只要做一次）：**
+
+1. 到 repo 的 **Settings → Pages**
+2. Source 選 **Deploy from a branch**
+3. Branch 選 **`gh-pages`**、資料夾選 **`/ (root)`**，按 **Save**
+
+啟用後網址為：<https://evanfu8466-eng.github.io/credit-tracker/>
+之後每次推送，網站都會自動更新。
 
 > 資料內容僅供參考，畢業資格請以教務處審核為準。
