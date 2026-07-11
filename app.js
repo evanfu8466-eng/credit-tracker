@@ -116,6 +116,45 @@
     }
   }
 
+  /* ---------------- 畫面：學分結構 ---------------- */
+
+  function renderCategoryReqs() {
+    var wrap = document.getElementById("cat-reqs");
+    if (!wrap || !DATA.categoryRequirements) return;
+    wrap.textContent = "";
+
+    DATA.categoryRequirements.forEach(function (r) {
+      var courses = DATA.courses.filter(function (c) {
+        return r.categories.indexOf(c.category) !== -1;
+      });
+      var earned = earnedCredits(courses).credits;
+
+      var row = el("div", "catreq-row");
+      var top = el("div", "catreq-top");
+      var name = el("span", "catreq-name");
+      name.textContent = r.name;
+      var nums = el("span", "catreq-nums");
+      nums.innerHTML = "<strong>" + earned + "</strong> / " + r.required + " 學分";
+      top.appendChild(name);
+      top.appendChild(nums);
+      row.appendChild(top);
+
+      var meter = el("div", "meter meter-thin");
+      meter.setAttribute("role", "progressbar");
+      meter.setAttribute("aria-label", r.name);
+      meter.setAttribute("aria-valuemin", "0");
+      meter.setAttribute("aria-valuemax", String(r.required));
+      meter.setAttribute("aria-valuenow", String(earned));
+      var fill = el("div", "meter-fill");
+      fill.style.width = Math.min(100, earned / r.required * 100) + "%";
+      fill.classList.toggle("is-done", earned >= r.required);
+      meter.appendChild(fill);
+      row.appendChild(meter);
+
+      wrap.appendChild(row);
+    });
+  }
+
   /* ---------------- 畫面：學程進度 ---------------- */
 
   function renderPrograms() {
@@ -269,6 +308,7 @@
       saveState();
       row.classList.toggle("is-done", box.checked);
       renderSummary();
+      renderCategoryReqs();
       renderPrograms();
       updateSubtotals();
     });
@@ -450,6 +490,7 @@
 
   function renderAll() {
     renderSummary();
+    renderCategoryReqs();
     renderPrograms();
     renderThresholds();
     renderCourses();
