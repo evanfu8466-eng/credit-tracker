@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#0a1424">
+  <title>實踐大學資管系 學分追蹤器</title>
+  <meta name="description" content="實踐大學資訊管理學系畢業學分與深化學程進度追蹤">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎓</text></svg>">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header class="site-header">
+    <h1>實踐大學資管系 學分追蹤器</h1>
+    <p class="subtitle">勾選已修完的課程，進度會自動計算並儲存在這台裝置上</p>
+  </header>
+
+  <main>
+
+    <!-- 畢業總進度 -->
+    <section class="card hero-card" aria-labelledby="hero-title">
+      <h2 id="hero-title" class="card-title">畢業進度</h2>
+      <div class="hero-figure">
+        <span class="hero-value" id="hero-earned">0</span>
+        <span class="hero-unit">/ <span id="hero-total">128</span> 學分</span>
+      </div>
+      <div class="meter" role="progressbar" aria-labelledby="hero-title"
+           aria-valuemin="0" aria-valuemax="128" aria-valuenow="0" id="hero-meter">
+        <div class="meter-fill" id="hero-fill"></div>
+      </div>
+      <div class="stat-row">
+        <div class="stat-tile">
+          <span class="stat-label">已修學分</span>
+          <span class="stat-value" id="stat-earned">0</span>
+        </div>
+        <div class="stat-tile">
+          <span class="stat-label">剩餘學分</span>
+          <span class="stat-value" id="stat-remaining">0</span>
+        </div>
+        <div class="stat-tile">
+          <span class="stat-label">完成度</span>
+          <span class="stat-value" id="stat-percent">0%</span>
+        </div>
+      </div>
+      <p class="cap-note" id="cap-note" hidden></p>
+    </section>
+
+    <!-- 學分結構：五大類各自進度（由 JS 產生） -->
+    <section class="card" aria-labelledby="catreq-title">
+      <h2 id="catreq-title" class="card-title">學分結構（114 學年課程計畫表）</h2>
+      <div id="cat-reqs"></div>
+      <p class="hint">通識須修 5 門、跨 4 個以上領域；選修 38 學分中本系專業選修至少 22 學分</p>
+    </section>
+
+    <!-- 兩個學程進度（由 JS 產生） -->
+    <section id="programs" aria-label="深化學程進度"></section>
+
+    <!-- 畢業門檻 -->
+    <section class="card" aria-labelledby="threshold-title">
+      <h2 id="threshold-title" class="card-title">畢業門檻（非學分）</h2>
+      <div class="threshold-row" id="thresholds"></div>
+      <p class="hint">點一下即可切換通過／未通過</p>
+    </section>
+
+    <!-- 工具列：篩選 + 匯出入 -->
+    <section class="card toolbar" aria-label="工具">
+      <div class="filter-group" role="group" aria-label="課程篩選">
+        <button type="button" class="filter-btn is-active" data-filter="all">全部課程</button>
+        <button type="button" class="filter-btn" data-filter="todo">只看未修</button>
+        <button type="button" class="filter-btn" data-filter="done">只看已修</button>
+      </div>
+      <div class="io-group">
+        <button type="button" class="io-btn" id="btn-export">⬇ 匯出 JSON</button>
+        <button type="button" class="io-btn" id="btn-import">⬆ 匯入 JSON</button>
+        <button type="button" class="io-btn io-danger" id="btn-reset">清除紀錄</button>
+        <input type="file" id="import-file" accept=".json,application/json" hidden>
+      </div>
+      <p class="hint" id="io-msg" role="status"></p>
+    </section>
+
+    <!-- 課程清單（由 JS 依年級/類別產生） -->
+    <section id="course-list" aria-label="課程清單"></section>
+
+  </main>
+
+  <footer class="site-footer">
+    <p>資料僅供參考，畢業資格請以教務處審核為準。</p>
+    <p>課程內容可編輯 <code>data/courses.js</code> 修改。</p>
+  </footer>
+
+  <script src="data/courses.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
